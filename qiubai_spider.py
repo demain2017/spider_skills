@@ -77,18 +77,18 @@ def download_pic(imgs):
         os.mkdir('pic')
     for pictures in imgs:
         for picture in pictures:
-            #try:
-            r = requests.get("http:" + picture)
-            picname = str(count) + '.jpg'
-            path = "pic/" + picname
-            with open(path, 'wb') as f:
-                f.write(r.content)
-            count = count + 1
-            #except:
-            #    print('failed download...') 
+            try:
+                r = requests.get("http:" + picture)
+                picname = str(count) + '.jpg'
+                path = "pic/" + picname
+                with open(path, 'wb') as f:
+                    f.write(r.content)
+                count = count + 1
+            except:
+                print('failed download...') 
 
 if __name__ == '__main__':
     url = 'https://www.qiushibaike.com/'
     result,picture = page_return(url)
-    #write_data(result,'qiubai.txt')
+    write_data(result,'qiubai.txt')
     download_pic(picture)
