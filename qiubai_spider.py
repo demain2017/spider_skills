@@ -32,7 +32,7 @@ def get_data(html):
     articles = content_left.find_all('div', attrs = {'class':re.compile('article block untagged mb15')}) #获得主体框的各个文章信息
     
     pages = content_left.find('ul', class_ = 'pagination') #获得翻页框
-    next_pageUrl = pages.find('span',class_='next').find_parent('a').get('href') #获取换页的URL
+    next_pageUrl = pages.find('span',class_ = 'next').find_parent('a').get('href') #获取换页的URL
     
     for article in articles:
         temp = [] #存放临时信息
@@ -52,14 +52,43 @@ def get_data(html):
         #将临时列表添加进最终列表中
         datas.append(temp)
     return datas,pictures,next_pageUrl
-def write_data(datas):
-    pass
+
+def page_return(url):
+    results_list = [] #百科信息
+    picture_list = [] #头像
+    currentUrl = url
+    count = 2 #抓取的网页数量
+    for x in range(0,count):
+        html = get_html(currentUrl)
+        datas,pictures,next_pageUrl = get_data(html)
+        results_list.append(datas)
+        picture_list.append(pictures)
+        currentUrl = url + next_pageUrl[1:]
+    return results_list,picture_list
+
+def write_data(datas, file_name):
+    for data in datas:
+        with open(file_name, 'a', errors = 'ignore', newline = '') as f:
+            f.write(str(datas))
 
 def download_pic(imgs):
-    pass
-
+    count = 1
+    if not os.path.exists('pic'):
+        os.mkdir('pic')
+    for pictures in imgs:
+        for picture in pictures:
+            #try:
+            r = requests.get("http:" + picture)
+            picname = str(count) + '.jpg'
+            path = "pic/" + picname
+            with open(path, 'wb') as f:
+                f.write(r.content)
+            count = count + 1
+            #except:
+            #    print('failed download...') 
 
 if __name__ == '__main__':
     url = 'https://www.qiushibaike.com/'
-    html = get_html(url)
-    get_data(html)
+    result,picture = page_return(url)
+    #write_data(result,'qiubai.txt')
+    download_pic(picture)
