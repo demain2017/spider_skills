@@ -83,6 +83,7 @@ def download_pic(imgs):
                 path = "pic/" + picname
                 with open(path, 'wb') as f:
                     f.write(r.content)
+                print('\rDownloading: {:.2f}%'.format(count*100/(len(pictures)*len(imgs))), end='')
                 count = count + 1
             except:
                 print('failed download...') 
